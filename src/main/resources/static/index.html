@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <title>Encore · Tickets worth the wait</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+<header><a class="brand" href="/">encore<span>●</span></a>
+    <nav>
+        <button id="discover">Discover</button>
+        <button id="history">My bookings</button>
+        <button id="organizer">Organizer</button>
+        <button id="admin">Operations</button>
+    </nav>
+</header>
+<main>
+    <section class="hero"><small>LIVE EXPERIENCES. LASTING MEMORIES.</small>
+        <h1>Your next great<br>night starts here.</h1>
+        <p>Choose your spot. Make it yours.</p></section>
+    <section class="login"><label>Account <input autocomplete="username" id="username" value="customer"></label><label>Password
+        <input autocomplete="current-password" id="password" type="password" value="demo-customer"></label>
+        <button id="login">Connect</button>
+        <button id="register">Register</button>
+        <span id="identity">Local sandbox</span></section>
+    <p class="notice">Demo: customer / demo-customer · organizer / demo-organizer · admin / demo-admin. Amounts in INR.
+        Seat maps refresh every 5 seconds; allocation is final only after checkout.</p>
+    <p id="message" role="status"></p>
+    <section id="content"></section>
+    <aside hidden id="checkout"><h2>Your selection</h2>
+        <p id="selection"></p>
+        <p id="countdown"></p>
+        <button id="reserve">Hold selected seats</button>
+        <div hidden id="payment"><select id="outcome">
+            <option>SUCCESS</option>
+            <option>FAIL</option>
+            <option>TIMEOUT</option>
+        </select>
+            <button id="pay">Pay with sandbox</button>
+            <button id="release">Release hold</button>
+        </div>
+    </aside>
+</main>
+<footer>Encore / Distributed ticketing laboratory <span>PostgreSQL authoritative inventory · Java 21</span></footer>
+<script src="/app.js"></script>
+</body>
+</html>

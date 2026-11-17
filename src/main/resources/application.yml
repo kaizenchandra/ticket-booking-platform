@@ -1,0 +1,36 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  tomcat:
+    max-connections: 2000
+    accept-count: 100
+spring:
+  application.name: ticket-booking-platform
+  threads.virtual.enabled: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5440/ticketing}
+    username: ${DB_USER:ticketing}
+    password: ${DB_PASSWORD:ticketing}
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 2000
+      connection-init-sql: "SET statement_timeout = '5s'"
+  lifecycle.timeout-per-shutdown-phase: 25s
+management:
+  endpoints.web.exposure.include: health,prometheus,info
+  endpoint.health.probes.enabled: true
+  endpoint.health.group.readiness.include: readinessState,db
+  tracing.sampling.probability: 0.1
+  otlp.tracing:
+    export.enabled: ${TRACING_ENABLED:false}
+    endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+  metrics.distribution.percentiles-histogram.http.server.requests: true
+logging:
+  structured.format.console: logstash
+ticketing:
+  demo: ${DEMO:true}
+  secret: ${TICKET_SECRET:local-only-change-this-secret-before-deploying-123456}
+  webhook-secret: ${WEBHOOK_SECRET:local-webhook-secret-change-before-deploying-123456}
+  hold-seconds: ${HOLD_SECONDS:300}
+  waiting-room: ${WAITING_ROOM:false}
+  admission-per-second: ${ADMISSION_PER_SECOND:20}

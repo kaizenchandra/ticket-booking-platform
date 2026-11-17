@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ticketing
+      POSTGRES_USER: ticketing
+      POSTGRES_PASSWORD: ticketing
+    ports: [ "127.0.0.1:5440:5432" ]
+    volumes: [ "ticket-data:/var/lib/postgresql/data" ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ticketing" ]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+  backend:
+    build: .
+    ports: [ "127.0.0.1:8086:8080" ]
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/ticketing
+      DB_USER: ticketing
+      DB_PASSWORD: ticketing
+      DEMO: "true"
+      WAITING_ROOM: ${WAITING_ROOM:-false}
+      HOLD_SECONDS: ${HOLD_SECONDS:-300}
+    depends_on:
+      postgres: { condition: service_healthy }
+    stop_grace_period: 30s
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    profiles: [ monitoring ]
+    ports: [ "127.0.0.1:9098:9090" ]
+    volumes: [ "./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro", "./docker/alerts.yml:/etc/prometheus/alerts.yml:ro" ]
+  grafana:
+    image: grafana/grafana:11.6.0
+    profiles: [ monitoring ]
+    ports: [ "127.0.0.1:3008:3000" ]
+    volumes: [ "./docker/grafana:/etc/grafana/provisioning:ro", "./docker/dashboard.json:/var/lib/grafana/dashboards/ticketing.json:ro" ]
+  redis:
+    image: redis:7.4-alpine
+    profiles: [ extensions ]
+    command: [ redis-server, --maxmemory, 128mb, --maxmemory-policy, allkeys-lru ]
+volumes:
+  ticket-data:
